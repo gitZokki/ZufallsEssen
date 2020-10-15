@@ -15,13 +15,24 @@ import de.zokki.Gui.Gui;
 public class Main {
 	public static boolean admin = false;
 	
+	
+	public static final String FOODNAME = "Speise";
+	public static final String FOODSNAME = FOODNAME + "n";
+	public static final String CATEGORYNAME = "Kategorie";
+	public static final String CATEGORIESNAME = CATEGORYNAME + "n";
+	public static final String INGREDIENTNAME = "Zutat";
+	public static final String INGREDIENTSNAME = INGREDIENTNAME + "en";
+	public static final String RECIPENAME = "Rezept";
+	public static final String RECIPESNAME = RECIPENAME + "e";
+	
 	private final static String VERSION = "v0.3.0";
-	public final static String GUINAME = "Zufälliges Essen - " + VERSION;
+	public final static String GUINAME = "Zufällige " + FOODSNAME + " - " + VERSION;
 	
 	public static Gui GUI = null;
 	
 	static int PORT = 1044;
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
 		try {

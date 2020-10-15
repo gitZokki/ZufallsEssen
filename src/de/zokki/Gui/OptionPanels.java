@@ -31,7 +31,7 @@ public class OptionPanels {
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.fill = GridBagConstraints.HORIZONTAL;
 				
-		JLabel message = new JLabel("Bitte ein Gericht eingeben!");
+		JLabel message = new JLabel("Bitte eine " + Main.FOODNAME + " eingeben!");
 		
 		JTextField foodTf = new JTextField();
 		foodTf.addKeyListener(new KeyListeners(possibleKeys.ALPHABET));
@@ -82,7 +82,7 @@ public class OptionPanels {
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.fill = GridBagConstraints.HORIZONTAL;
 		
-		JLabel message = new JLabel("Bitte eine Kategorie eingeben!");
+		JLabel message = new JLabel("Bitte eine " + Main.CATEGORYNAME + " eingeben!");
 		
 		JTextField categoryTf = new JTextField();
 		categoryTf.addKeyListener(new KeyListeners(possibleKeys.ALPHABET));
@@ -142,8 +142,8 @@ public class OptionPanels {
 		categories.setPrototypeDisplayValue("EIN categories STRING");
 		unit.setPrototypeDisplayValue("EIN units      STRING");
 		
-		JLabel ingredientsLabel = new JLabel("Name der Zutat?");
-		JLabel categoryLabel = new JLabel("Welche Kategroie");
+		JLabel ingredientsLabel = new JLabel("Name der " + Main.INGREDIENTNAME + "?");
+		JLabel categoryLabel = new JLabel("Welche " + Main.CATEGORYNAME + "?");
 		JLabel unitLabel = new JLabel("Welche Einheit?");
 		
 		grid.insets = new Insets(5, 5, 5, 5);
@@ -219,9 +219,9 @@ public class OptionPanels {
 		
 		ingredients.setPrototypeDisplayValue("EIN LANGER STRING");
 		
-		JLabel ingredientLabel = new JLabel("Zutat: ");
+		JLabel ingredientLabel = new JLabel(Main.INGREDIENTNAME + ": ");
 		JLabel countLabel = new JLabel("Menge: ");
-		JTextArea foodLabel = new JTextArea("Zu welchen Essen soll das \nRezept hinzugefügt werden?");
+		JTextArea foodLabel = new JTextArea("Zu welchen Essen soll das \n" + Main.RECIPENAME + " hinzugefügt werden?");
 		foodLabel.setEditable(false);
 		foodLabel.setBackground(Main.GUI.getBackground());
 		foodLabel.setFont(ingredientLabel.getFont());
@@ -260,7 +260,7 @@ public class OptionPanels {
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.fill = GridBagConstraints.HORIZONTAL;
 		
-		JLabel foodLabel = new JLabel("Bei welchen Gericht?");
+		JLabel foodLabel = new JLabel("Bei welche " + Main.FOODNAME + "?");
 		JLabel countLabel = new JLabel("Neue Menge: ");
 		JTextField ingredientsAmount = new JTextField();
 		ingredientsAmount.addKeyListener(new KeyListeners(KeyListeners.possibleKeys.DIGITS));
@@ -314,8 +314,8 @@ public class OptionPanels {
 		GridBagConstraints grid = new GridBagConstraints();
 		grid.fill = GridBagConstraints.HORIZONTAL;
 		
-		JLabel foodLabel = new JLabel("Essen");
-		JLabel recipeLabel = new JLabel("Rezept");
+		JLabel foodLabel = new JLabel(Main.FOODNAME);
+		JLabel recipeLabel = new JLabel(Main.RECIPENAME);
 		
 		JComboBox<String> foods = new JComboBox<String>(XMLWriter.getFoods());
 		JComboBox<String> ingredients = new JComboBox<String>(XMLWriter.getRecipes((String) foods.getSelectedItem()));

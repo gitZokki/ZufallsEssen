@@ -22,6 +22,7 @@ import de.zokki.FileManager.XMLWriter;
 import de.zokki.FileManager.XMLWriter.units;
 import de.zokki.Gui.OptionPanels;
 
+@SuppressWarnings("unchecked")
 public class ActionListeners implements ActionListener {
 	String[] options = { "Weitere", "Ok", "Abbrechen" };
 	OptionPanels op = new OptionPanels();
@@ -42,7 +43,7 @@ public class ActionListeners implements ActionListener {
 			System.out.println(ConsoleColors.GREEN + "foodDel clicked" + ConsoleColors.RESET);
 			if(!hasFoods()) { return; }
 			
-			String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welchen Gericht soll entfernt werden?", "Ein Gericht entfernen", JOptionPane.CLOSED_OPTION, null,
+			String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welche " + Main.FOODNAME + " soll entfernt werden?", "Eine " + Main.FOODNAME + " entfernen", JOptionPane.CLOSED_OPTION, null,
 					XMLWriter.getFoods(), "Fehler 404");
 			
 			if(input != null) {
@@ -63,7 +64,7 @@ public class ActionListeners implements ActionListener {
 			System.out.println(ConsoleColors.GREEN + "categorysDel clicked" + ConsoleColors.RESET);
 			if(!hasCategories()) { return; }			
 			
-			String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welche Kategorie soll entfernt werden?", "Eine Kategorie entfernen", JOptionPane.CLOSED_OPTION, null,
+			String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welche " + Main.CATEGORYNAME + " soll entfernt werden?", "Eine " + Main.CATEGORYNAME + " entfernen", JOptionPane.CLOSED_OPTION, null,
 					XMLWriter.getCategories(false), "Fehler 404");
 			
 			if(input != null) {
@@ -117,17 +118,15 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(null, panel, "Ein Gericht hinzufügen", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(null, panel, "Eine " + Main.FOODNAME + " hinzufügen", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				addFood();
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.addFood(food.getText());
+				addFood();
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.addFood(food.getText());
 				break;
 		}
 		
@@ -151,17 +150,15 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Zutat hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.RECIPENAME + " hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				editFood((String) foods.getSelectedItem());
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.editFood((String) foods.getSelectedItem(), newName.getText());
+				editFood((String) foods.getSelectedItem());
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.editFood((String) foods.getSelectedItem(), newName.getText());
 				break;
 		}
 		
@@ -181,17 +178,15 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Kategorie hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.CATEGORYNAME + " hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				addCategorys();
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.addCategorys(ingredientsText.getText());
+				addCategorys();
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.addCategorys(ingredientsText.getText());
 				break;
 		}
 		System.out.println(ConsoleColors.GREEN + "Finished ActionListeners.addCategorys()" + ConsoleColors.RESET);
@@ -215,17 +210,15 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Kategorie bearbeiten!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.CATEGORYNAME + " bearbeiten!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				editCategorys((String) categories.getSelectedItem());
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.editCategorys((String) categories.getSelectedItem(), text.getText());
+				editCategorys((String) categories.getSelectedItem());
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.editCategorys((String) categories.getSelectedItem(), text.getText());
 				break;
 		}
 		System.out.println(ConsoleColors.GREEN + "Finished ActionListeners.editCategorys()" + ConsoleColors.RESET);
@@ -252,17 +245,15 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Zutat hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.INGREDIENTNAME + " hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				addIngredients();
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.addIngredients(ingredientsText.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
+				addIngredients();
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.addIngredients(ingredientsText.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
 				break;
 		}
 		
@@ -294,18 +285,17 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Zutat bearbeiten!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.INGREDIENTNAME + " bearbeiten!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				editIngredients((String) ingredients.getSelectedItem());
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()),
 						(String) categories.getSelectedItem());
+				editIngredients((String) ingredients.getSelectedItem());
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()),
+						(String) categories.getSelectedItem());
 				break;
 		}
 		System.out.println(ConsoleColors.GREEN + "Finished ActionListeners.editIngredients()" + ConsoleColors.RESET);
@@ -315,7 +305,7 @@ public class ActionListeners implements ActionListener {
 		System.out.println(ConsoleColors.GREEN + "In ActionListeners.delIngredients()" + ConsoleColors.RESET);
 		if(!hasIngredients()) { return; }
 		
-		String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welche Zutat soll entfernt werden?", "Eine Zutat entfernen", JOptionPane.CLOSED_OPTION, null,
+		String input = (String) JOptionPane.showInputDialog(Main.GUI, "Welche " + Main.INGREDIENTNAME + " soll entfernt werden?", "Eine " + Main.INGREDIENTNAME + " entfernen", JOptionPane.CLOSED_OPTION, null,
 				XMLWriter.getIngredients(), "Fehler 404");
 		
 		if(input != null) {
@@ -349,19 +339,17 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Zutat hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.RECIPENAME + " hinzufügen!", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		String food = (String) foods.getSelectedItem();
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				addRecipe(food);
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
+				addRecipe(food);
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
 				break;
 		}
 		
@@ -390,7 +378,7 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(null, panel, "Ein Gericht bearbeiten", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		int input = JOptionPane.showOptionDialog(null, panel, "Ein " + Main.RECIPENAME + " bearbeiten", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		if(ingredientsAmount.getText().length() == 0) {
 			System.out.println(ConsoleColors.CYAN + "Finished ActionListeners.editRecipe() with empty amount" + ConsoleColors.RESET);
@@ -405,14 +393,12 @@ public class ActionListeners implements ActionListener {
 		}
 		
 		switch (input) {
-			case 0: // ’Weitere’ button
-				editRecipe((String) foods.getSelectedItem());
-			case 1: // ’OK’ button (and ’Weiter’)
+			case 0: // 'Weitere' button
 				XMLWriter.editRecipe((String) foods.getSelectedItem(), (String) ingredients.getSelectedItem(), Integer.parseInt(ingredientsAmount.getText()));
+				editRecipe((String) foods.getSelectedItem());
 				break;
-			case 2: // ’Abbrechen’
-				break;
-			default: // Close - '-1'
+			case 1: // 'OK' button (and 'Weiter')
+				XMLWriter.editRecipe((String) foods.getSelectedItem(), (String) ingredients.getSelectedItem(), Integer.parseInt(ingredientsAmount.getText()));
 				break;
 		}
 		
@@ -438,7 +424,7 @@ public class ActionListeners implements ActionListener {
 			}
 		}
 		
-		int input = JOptionPane.showOptionDialog(Main.GUI, panel, "Zutat löschen!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+		int input = JOptionPane.showOptionDialog(Main.GUI, panel, Main.RECIPENAME + " löschen!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
 				new String[] { options[1], options[2] }, null);
 		
 		if(ingredients.getSelectedIndex() == -1)
@@ -448,7 +434,6 @@ public class ActionListeners implements ActionListener {
 			case 0:
 				XMLWriter.delRecipes((String) foods.getSelectedItem(), (String) ingredients.getSelectedItem());
 				break;
-			
 			default:
 				break;
 		}
@@ -503,7 +488,7 @@ public class ActionListeners implements ActionListener {
 				panelWrapper.row++;
 			});
 			if(panelWrapper.panel.getComponentCount() != 0)
-				JOptionPane.showMessageDialog(Main.GUI, panelWrapper.panel, "Benötigte Zutaten", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(Main.GUI, panelWrapper.panel, "Benötigte " + Main.INGREDIENTSNAME, JOptionPane.PLAIN_MESSAGE);
 			
 			Main.GUI.setFont();
 		} else
@@ -514,8 +499,8 @@ public class ActionListeners implements ActionListener {
 	
 	private boolean hasFoods() {
 		if(XMLWriter.getFoods().length == 0) {
-			JOptionPane.showMessageDialog(Main.GUI, "Noch keine Speißen vorhanden!", "Speißen fehlen!", JOptionPane.INFORMATION_MESSAGE);
-			System.out.println(ConsoleColors.CYAN + "Finished hasFoods - with no food" + ConsoleColors.RESET);
+			JOptionPane.showMessageDialog(Main.GUI, "Noch keine " + Main.FOODSNAME + " vorhanden!", Main.FOODSNAME + " fehlen!", JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(ConsoleColors.CYAN + "Finished ActionListeners.hasFoods - with no food" + ConsoleColors.RESET);
 			return false;
 		}
 		return true;
@@ -523,8 +508,8 @@ public class ActionListeners implements ActionListener {
 	
 	private boolean hasIngredients() {
 		if(XMLWriter.getIngredients().length == 0) {
-			JOptionPane.showMessageDialog(Main.GUI, "Noch keine Zutaten vorhanden!", "Zutaten fehlen!", JOptionPane.INFORMATION_MESSAGE);
-			System.out.println(ConsoleColors.CYAN + "Finished ActionListeners.hasIngredients() with no ingredients" + ConsoleColors.RESET);
+			JOptionPane.showMessageDialog(Main.GUI, "Noch keine " + Main.INGREDIENTSNAME + " vorhanden!", Main.INGREDIENTSNAME + " fehlen!", JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(ConsoleColors.CYAN + "Finished ActionListeners.hasIngredients() - with no ingredients" + ConsoleColors.RESET);
 			return false;
 		}
 		return true;
@@ -532,8 +517,8 @@ public class ActionListeners implements ActionListener {
 	
 	private boolean hasCategories() {
 		if(XMLWriter.getCategories(false).length == 0) {
-			JOptionPane.showMessageDialog(Main.GUI, "Noch keine Kategorie vorhanden!", "Kategorie fehlen!", JOptionPane.INFORMATION_MESSAGE);
-			System.out.println(ConsoleColors.CYAN + "Finished categorysDel - with no categorie" + ConsoleColors.RESET);
+			JOptionPane.showMessageDialog(Main.GUI, "Noch keine " + Main.CATEGORIESNAME + " vorhanden!", Main.CATEGORIESNAME + " fehlen!", JOptionPane.INFORMATION_MESSAGE);
+			System.out.println(ConsoleColors.CYAN + "Finished ActionListeners.hasCategories - with no categorie" + ConsoleColors.RESET);
 			return false;
 		}
 		return true;

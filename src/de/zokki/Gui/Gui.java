@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import de.zokki.Main;
 import de.zokki.Listeners.ActionListeners;
 
 public class Gui extends JFrame {
@@ -26,15 +27,15 @@ public class Gui extends JFrame {
 	String del = "löschen";
 	String edit = "bearbeiten";
 	
-	public JButton generate = new JButton("Zufällige Essen ausgeben");
+	public JButton generate = new JButton("Zufällige " + Main.FOODSNAME + " ausgeben");
 	public JTextField count = new JTextField("7");
 	public JTextArea food = new JTextArea("");
 	
 	private JMenuBar bar = new JMenuBar();
-	public JMenu foodMenu = new JMenu("Essen");
-	public JMenu categorysMenu = new JMenu("Kategorien");
-	public JMenu ingredientsMenu = new JMenu("Zutaten");
-	public JMenu recipeMenu = new JMenu("Rezepte");
+	public JMenu foodMenu = new JMenu(Main.FOODSNAME);
+	public JMenu categorysMenu = new JMenu(Main.CATEGORIESNAME);
+	public JMenu ingredientsMenu = new JMenu(Main.INGREDIENTSNAME);
+	public JMenu recipeMenu = new JMenu(Main.RECIPESNAME);
 	public JMenuItem foodAdd = new JMenuItem(add);
 	public JMenuItem foodEdit = new JMenuItem(edit);
 	public JMenuItem foodDel = new JMenuItem(del);
@@ -124,7 +125,7 @@ public class Gui extends JFrame {
 		count.setBounds(BORDER, 20, getContentPane().getWidth() / 3, 25);
 		
 		generate.setLocation(count.getX() + count.getWidth() + BORDER, 20);
-		generate.setSize(getWidth() - generate.getX() - BORDER, 25);
+		generate.setSize(getContentPane().getWidth() - generate.getX() - BORDER, 25);
 		
 		scroll.setBounds(BORDER, count.getY() + count.getHeight() + BORDER, getContentPane().getWidth() - BORDER * 2,
 				getContentPane().getHeight() - count.getY() - count.getHeight() - BORDER * 2);
