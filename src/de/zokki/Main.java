@@ -59,9 +59,10 @@ public class Main {
 	 * FIXMEs and TODOs
 	 * 
 	 * FIXME deactivate and activate with XMLWriter
-	 * FIXME delete and edit categories etc in other foods etc
+	 * TODO existend ingredients dont show in addRecipe
 	 * TODO maybe buttons - recipe and other infos
 	 * TODO Write everything on .txt and open it 
 	 * TODO set Application on front if already open - win? nircmd?
+	 * TODO settings -> xml-file location, txt-file location - maybe save or temp
 	 */
 }

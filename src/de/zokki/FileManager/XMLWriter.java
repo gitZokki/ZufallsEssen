@@ -32,8 +32,7 @@ public class XMLWriter {
 	public static final String nameName = "Name";
 	public static final String countName = "Anzahl";
 	public static final String recipeName = "Rezept";
-	public static final String untiName = "Einheit";
-	public static final String non = "null";
+	public static final String unitName = "Einheit";
 	public static final String noIngredient = "Keine_Zutaten_vorhanden";
 	public static final String noCategory = "Keine_Kategorie";
 	
@@ -161,16 +160,6 @@ public class XMLWriter {
 		}
 	}
 	
-	private static String removeUnits(String input) {
-		try {
-			return input.substring(0, input.indexOf("(") - 1);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(Main.GUI, "FEHLER 405 BITTE MELDEN!!!", "ERROR 405", JOptionPane.ERROR_MESSAGE);
-			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.removeUnits() error - TRY" + ConsoleColors.RESET);
-			return null;
-		}
-	}
-	
 	private static boolean hasInvalidChars(String... input) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.hasInvalidChars()" + ConsoleColors.RESET);
 		try {
@@ -207,7 +196,7 @@ public class XMLWriter {
 				return true;
 			}
 			if(checkChars)
-				if(hasInvalidChars(input[i].replaceAll(" ", "_"))) {
+				if(hasInvalidChars(input[i])) {
 					System.out.println(ConsoleColors.RED + "Writer.hasInvalidInput() has InvalidChars" + ConsoleColors.RESET);
 					showInvalidCharError(input[i]);
 					return true;
@@ -219,25 +208,25 @@ public class XMLWriter {
 	
 	private static void showInvalidCharError(String input) {
 		System.out.println(ConsoleColors.RED + "In Writer.showInvalidCharError()" + ConsoleColors.RESET);
-		JOptionPane.showMessageDialog(Main.GUI, "'" + input + "' enthält ein ungültiges Zeichen!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(Main.GUI, "'" + input.replaceAll("_", " ") + "' enthält ein ungültiges Zeichen!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		System.out.println(ConsoleColors.RED + "Finished Writer.showInvalidCharError()" + ConsoleColors.RESET);
 	}
 	
 	private static void showInvalidInputError(String input) {
 		System.out.println(ConsoleColors.RED + "In Writer.showInvalidInputError()" + ConsoleColors.RESET);
-		JOptionPane.showMessageDialog(Main.GUI, "’" + input + "’ FEHLER MIT DER EINGABE IN WRITER!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(Main.GUI, "’" + input.replaceAll("_", " ") + "’ FEHLER MIT DER EINGABE IN WRITER!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		System.out.println(ConsoleColors.RED + "Finished Writer.showInvalidInputError()" + ConsoleColors.RESET);
 	}
 	
 	private static void showAlreadyExisting(String input) {
 		System.out.println(ConsoleColors.YELLOW + "In Writer.showAlreadyExisting()" + ConsoleColors.RESET);
-		JOptionPane.showMessageDialog(Main.GUI, "'" + input + "' ist bereits vorhanden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(Main.GUI, "'" + input.replaceAll("_", " ") + "' ist bereits vorhanden!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		System.out.println(ConsoleColors.YELLOW + "Finished Writer.showAlreadyExisting()" + ConsoleColors.RESET);
 	}
 	
 	private static void showUnknownError(String input) {
 		System.out.println(ConsoleColors.YELLOW + "In Writer.showUnknownError()" + ConsoleColors.RESET);
-		JOptionPane.showMessageDialog(Main.GUI, "Unbekannter Fehler: '" + input + "'!", "Fehler", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(Main.GUI, "Unbekannter Fehler: '" + input.replaceAll("_", " ") + "'!", "Fehler", JOptionPane.ERROR_MESSAGE);
 		System.out.println(ConsoleColors.YELLOW + "Finished Writer.showUnknownError()" + ConsoleColors.RESET);
 	}
 	
@@ -259,8 +248,22 @@ public class XMLWriter {
 		}
 		return getNodeList(path.substring(0, path.length() - 1));
 	}
-
-	private static boolean hasUnit(String hasUnit) {
+	
+	public static String getUnitOf(String unit) {
+		return getNodeList("root", rootIngredientsName, unit.replaceAll(" ", "_"), unitName).item(0).getTextContent();
+	}
+	
+	public static String removeUnits(String input) {
+		try {
+			return input.substring(0, input.indexOf("(") - 1);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(Main.GUI, "FEHLER 405 BITTE MELDEN!!!", "ERROR 405", JOptionPane.ERROR_MESSAGE);
+			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.removeUnits() error - TRY" + ConsoleColors.RESET);
+			return null;
+		}
+	}
+	
+	public static boolean hasUnit(String hasUnit) {
 		var wrapper = new Object() {
 			boolean value = false;
 		};
@@ -290,12 +293,12 @@ public class XMLWriter {
 
 	public static void addFood(String food) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.addFood()" + ConsoleColors.RESET);
+		
+		food = food.replaceAll(" ", "_");
 		if(hasInvalidInput(true, food)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.addFood() has InvalidInput" + ConsoleColors.RESET);
 			return;
 		}
-		
-		food = food.replaceAll(" ", "_");
 		
 		if(rootFood.getElementsByTagName(food).getLength() == 0) {
 			Element foodElemet = document.createElement(food);
@@ -320,17 +323,16 @@ public class XMLWriter {
 	
 	public static void editFood(String oldFood, String newFood) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.editFood()");
+		
+		oldFood = oldFood.replaceAll(" ", "_");
+		newFood = newFood.replaceAll(" ", "_");
 		if(hasInvalidInput(true, newFood)) {
 			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.editFood() has InvalidInput");
 			return;
 		}
 		
-		oldFood = oldFood.replaceAll(" ", "_");
-		newFood = newFood.replaceAll(" ", "_");
-		
 		if(getNodeList("root", rootFoodName, newFood).getLength() == 0) {
 			Element foodNode = (Element) getNodeList("root", rootFoodName, oldFood).item(0);
-			
 			document.renameNode(foodNode, null, newFood);
 			
 			foodNode.getElementsByTagName(nameName).item(0).setTextContent(newFood);
@@ -345,15 +347,16 @@ public class XMLWriter {
 
 	public static void delFood(String input) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.delFood()" + ConsoleColors.RESET);
+		
 		rootFood.removeChild(getNodeList("root", rootFoodName, input.replaceAll(" ", "_")).item(0));
 		
 		create();
-		
 		System.out.println(ConsoleColors.GREEN + "Finished Writer.delFood()" + ConsoleColors.RESET);
 	}
 
 	public static String[] getFoods() {
 		System.out.println(ConsoleColors.GREEN + "In Writer.getFoods()" + ConsoleColors.RESET);
+		
 		NodeList nodeList = rootFood.getChildNodes();
 		String[] strings = new String[nodeList.getLength()];
 		
@@ -367,13 +370,12 @@ public class XMLWriter {
 	
 	public static void addCategorys(String category) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.addCategorys()" + ConsoleColors.RESET);
+		
+		category = category.replaceAll(" ", "_");
 		if(hasInvalidInput(true, category)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.addCategorys() has InvalidInput" + ConsoleColors.RESET);
 			return;
 		}
-		
-		category = category.replaceAll(" ", "_");
-		
 		if(category.equalsIgnoreCase(noCategory)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.addCategorys() with no Ingredients" + ConsoleColors.RESET);
 			JOptionPane.showMessageDialog(Main.GUI, "Also wirklich...", "Nein!", JOptionPane.QUESTION_MESSAGE);
@@ -395,14 +397,13 @@ public class XMLWriter {
 	
 	public static void editCategorys(String category, String newCategory) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.editCategorys()" + ConsoleColors.RESET);
+		
+		category = category.replaceAll(" ", "_");
+		newCategory = newCategory.replaceAll(" ", "_");
 		if(hasInvalidInput(true, newCategory)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.editCategorys() has InvalidInput" + ConsoleColors.RESET);
 			return;
 		}
-		
-		category = category.replaceAll(" ", "_");
-		newCategory = newCategory.replaceAll(" ", "_");
-		
 		if(newCategory.equalsIgnoreCase(noCategory)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.addCategorys() with no Ingredients" + ConsoleColors.RESET);
 			JOptionPane.showMessageDialog(Main.GUI, "Also wirklich...", "Nein!", JOptionPane.QUESTION_MESSAGE);
@@ -432,11 +433,11 @@ public class XMLWriter {
 	
 	public static void delCategorys(String category) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.delCategorys()" + ConsoleColors.RESET);
-		category = category.replaceAll(" ", "_");
 		
+		category = category.replaceAll(" ", "_");
 		NodeList newNode = getNodeList("root", rootIngredientsName, "/node()[" + rootCategoryName + "='" + category + "']");
 		for(int i = 0; i < newNode.getLength(); i++) {
-			document.removeChild(((Element) newNode.item(i)).getElementsByTagName(rootCategoryName).item(0));
+			((Element) newNode.item(i)).getElementsByTagName(rootCategoryName).item(0).setTextContent(noCategory);
 		}
 		
 		Node node = getNodeList("root", rootCategoryName, category).item(0);
@@ -453,6 +454,7 @@ public class XMLWriter {
 	
 	public static String[] getCategories(boolean defaultValue) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.getCategorys()" + ConsoleColors.RESET);
+		
 		int startValue = defaultValue ? 1 : 0;
 		
 		NodeList nodeList = rootCategory.getChildNodes();
@@ -472,17 +474,13 @@ public class XMLWriter {
 	
 	public static void addIngredients(String ingredient, units unit, String category) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.addIngredients()" + ConsoleColors.RESET);
-		if(category == null || category.isEmpty())
-			category = non;
 		
+		ingredient = ingredient.replaceAll(" ", "_");
+		category = category.replaceAll(" ", "_");
 		if(hasInvalidInput(true, ingredient)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.addIngredients() has InvalidInput" + ConsoleColors.RESET);
 			return;
 		}
-		
-		ingredient = ingredient.replaceAll(" ", "_");
-		category = category.replaceAll(" ", "_");
-		
 		if(ingredient.equalsIgnoreCase(noIngredient)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.addIngredients() with no Ingredients" + ConsoleColors.RESET);
 			JOptionPane.showMessageDialog(Main.GUI, "Also wirklich...", "Nein!", JOptionPane.QUESTION_MESSAGE);
@@ -491,7 +489,7 @@ public class XMLWriter {
 		
 		if(rootIngredients.getElementsByTagName(ingredient).getLength() == 0) {
 			Element ingredientElemet = document.createElement(ingredient);
-			Element unitElement = document.createElement(untiName);
+			Element unitElement = document.createElement(unitName);
 			Element categoryElement = document.createElement(rootCategoryName);
 			
 			unitElement.setTextContent(unit.toString());
@@ -514,21 +512,16 @@ public class XMLWriter {
 		if(hasUnit(oldIngredient)) {
 			oldIngredient = removeUnits(oldIngredient);
 		}
-		
-		if(category == null || category.isEmpty())
-			category = non;
-		
 		if(newIngredient.isEmpty())
 			newIngredient = oldIngredient;
-		
-		if(hasInvalidInput(true, oldIngredient, newIngredient)) {
-			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.editIngredients() has InvalidInput" + ConsoleColors.RESET);
-			return;
-		}
 		
 		oldIngredient = oldIngredient.replaceAll(" ", "_");
 		newIngredient = newIngredient.replaceAll(" ", "_");
 		category = category.replaceAll(" ", "_");
+		if(hasInvalidInput(true, newIngredient)) {
+			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.editIngredients() has InvalidInput" + ConsoleColors.RESET);
+			return;
+		}
 		
 		if(newIngredient.equalsIgnoreCase(noIngredient)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.editIngredients() with no Ingredients" + ConsoleColors.RESET);
@@ -537,10 +530,10 @@ public class XMLWriter {
 		}
 		
 		if(rootIngredients.getElementsByTagName(newIngredient).getLength() == 0 || newIngredient.contentEquals(oldIngredient)) {
-			delIngredients(oldIngredient);
+			delIngredients(false, oldIngredient);
 			addIngredients(newIngredient, unit, category);
 			
-			NodeList newNode = getNodeList("root", rootIngredientsName, oldIngredient);
+			NodeList newNode = getNodeList("root", rootFoodName, "node()", recipeName, oldIngredient);
 			for(int i = 0; i < newNode.getLength(); i++) {
 				Element newElement = (Element) newNode.item(i);
 				
@@ -558,29 +551,28 @@ public class XMLWriter {
 		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.editIngredients()" + ConsoleColors.RESET);
 	}
 	
-	public static void delIngredients(String ingredient) {
+	public static void delIngredients(String ingredint) {
+		delIngredients(true, ingredint);
+	}
+	
+	public static void delIngredients(boolean delEvery, String ingredient) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.delIngredients()" + ConsoleColors.RESET);
 		if(hasUnit(ingredient)) {
 			ingredient = removeUnits(ingredient);
 		}
 		
-		if(hasInvalidInput(ingredient)) {
-			System.out.println(ConsoleColors.RED_BOLD + "XMLWriter.delIngredients() has InvalidInput" + ConsoleColors.RESET);
-			return;
-		}
+		ingredient = ingredient.replaceAll(" ", "_");	
 		
-		ingredient = ingredient.replaceAll(" ", "_");
-		
-		NodeList nodes = getNodeList("root", rootFoodName, ingredient);
-		
-		for(int i = 0; i < nodes.getLength();) {
-			nodes.item(i).getParentNode().removeChild(nodes.item(i));
+		if(delEvery) {
+			NodeList nodes = getNodeList("root", rootFoodName, "node()", recipeName, ingredient);
+			for(int i = 0; i < nodes.getLength(); i++) {
+				nodes.item(i).getParentNode().removeChild(nodes.item(i));
+			}
 		}
 			
 		rootIngredients.removeChild(rootIngredients.getElementsByTagName(ingredient).item(0));
 		
 		create();
-		
 		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.delIngredients()" + ConsoleColors.RESET);
 	}
 	
@@ -589,10 +581,9 @@ public class XMLWriter {
 		
 		NodeList nodeList = rootIngredients.getChildNodes();
 		String[] strings = new String[nodeList.getLength()];
-		
 		for(int i = 0; i < nodeList.getLength(); i++) {
 			strings[i] = addUnits(nodeList.item(i).getNodeName().replaceAll("_", " "),
-					units.valueOf(((Element) nodeList.item(i)).getElementsByTagName(untiName).item(0).getTextContent()));
+					units.valueOf(((Element) nodeList.item(i)).getElementsByTagName(unitName).item(0).getTextContent()));
 		}
 		
 		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.getIngredients()" + ConsoleColors.RESET);
@@ -601,20 +592,18 @@ public class XMLWriter {
 	
 	public static int getIngredientAmount(String food, String ingredient) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.getIngredientAmount()" + ConsoleColors.RESET);
-		if(hasInvalidInput(food, ingredient)) {
-			System.out.println(ConsoleColors.RED_BOLD + "Writer.getIngredientAmount() has InvalidInput" + ConsoleColors.RESET);
-			return -1;
+		if(hasUnit(ingredient)) {
+			ingredient = removeUnits(ingredient);
 		}
 		
 		food = food.replaceAll(" ", "_");
 		ingredient = ingredient.replaceAll(" ", "_");
-		
-		if(hasUnit(ingredient)) {
-			ingredient = removeUnits(ingredient);
+		if(hasInvalidInput(food, ingredient)) {
+			System.out.println(ConsoleColors.RED_BOLD + "Writer.getIngredientAmount() has InvalidInput" + ConsoleColors.RESET);
+			return -1;
 		}
-			
+
 		Element element = (Element) getNodeList("root", rootFoodName, food, recipeName).item(0);
-		
 		if(element.getTextContent().length() == 0) {
 			System.out.println(ConsoleColors.CYAN + "Finished XMLWriter.getIngredientAmount() without ingredients" + ConsoleColors.RESET);
 			return -1;
@@ -636,12 +625,14 @@ public class XMLWriter {
 	
 	public static void addCount(String food, int amount) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.addCount()" + ConsoleColors.RESET);
+		
+		food = food.replaceAll(" ", "_");
 		if(hasInvalidInput(food)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.addCount() has InvalidInput" + ConsoleColors.RESET);
 			return;
 		}
 		
-		Node countNode = ((Element) rootFood.getElementsByTagName(food.replaceAll(" ", "_")).item(0)).getElementsByTagName(countName).item(0);
+		Node countNode = ((Element) rootFood.getElementsByTagName(food).item(0)).getElementsByTagName(countName).item(0);
 		countNode.setTextContent(Integer.parseInt(countNode.getTextContent()) + amount + "");
 		create();
 		
@@ -654,8 +645,8 @@ public class XMLWriter {
 		for(int i = 0; i < nodes.getLength(); i++) {
 			nodes.item(i).setTextContent("0");
 		}
-		create();
 		
+		create();
 		System.out.println(ConsoleColors.GREEN + "Finished Writer.resetCount()" + ConsoleColors.RESET);
 	}
 	
@@ -665,18 +656,16 @@ public class XMLWriter {
 			System.out.println(ConsoleColors.YELLOW + "Writer.addRecipe() amount to small" + ConsoleColors.RESET);
 			return;
 		}
-		
 		if(hasUnit(recipeName)) {
 			recipeName = removeUnits(recipeName);
-		}
-			
-		if(hasInvalidInput(inputFood, recipeName)) {
-			System.out.println(ConsoleColors.RED_BOLD + "Writer.addRecipe() has InvalidInput" + ConsoleColors.RESET);
-			return;
 		}
 		
 		inputFood = inputFood.replaceAll(" ", "_");
 		recipeName = recipeName.replaceAll(" ", "_");
+		if(hasInvalidInput(inputFood, recipeName)) {
+			System.out.println(ConsoleColors.RED_BOLD + "Writer.addRecipe() has InvalidInput" + ConsoleColors.RESET);
+			return;
+		}
 		
 		if(getNodeList("root", rootFoodName, inputFood, XMLWriter.recipeName, recipeName).getLength() == 0) {
 			Element element = document.createElement(recipeName);
@@ -702,19 +691,16 @@ public class XMLWriter {
 			delRecipes(food, ingredient);
 			return;
 		}
-		
 		if(hasUnit(ingredient)) {
 			ingredient = removeUnits(ingredient);
-		}
-			
-		if(hasInvalidInput(food, ingredient)) {
-			System.out.println(ConsoleColors.RED_BOLD + "Writer.editRecipe() has InvalidChars" + ConsoleColors.RESET);
-			return;
 		}
 		
 		food = food.replaceAll(" ", "_");
 		ingredient = ingredient.replaceAll(" ", "_");
-		
+		if(hasInvalidInput(food, ingredient)) {
+			System.out.println(ConsoleColors.RED_BOLD + "Writer.editRecipe() has InvalidChars" + ConsoleColors.RESET);
+			return;
+		}
 		if(ingredient.equalsIgnoreCase(noIngredient)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.editRecipe() with no ingredient" + ConsoleColors.RESET);
 			return;
@@ -735,16 +721,16 @@ public class XMLWriter {
 
 	public static void delRecipes(String food, String recipe) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.delRecipes()" + ConsoleColors.RESET);
+		if(hasUnit(recipe)) {
+			recipe = removeUnits(recipe);
+		}
+		
+		recipe = recipe.replaceAll(" ", "_");
+		food = food.replaceAll(" ", "_");
 		if(hasInvalidInput(food, recipe)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.delRecipes() has InvalidChars" + ConsoleColors.RESET);
 			return;
 		}
-		if(hasUnit(recipe)) {
-			recipe = removeUnits(recipe);
-		}
-		recipe = recipe.replaceAll(" ", "_");
-		food = food.replaceAll(" ", "_");
-		
 		if(recipe.equalsIgnoreCase(noIngredient)) {
 			System.out.println(ConsoleColors.YELLOW + "Finished XMLWriter.editRecipe() with no ingredient" + ConsoleColors.RESET);
 			return;
@@ -760,26 +746,23 @@ public class XMLWriter {
 	
 	public static String[] getRecipes(String food) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.getRecipes()" + ConsoleColors.RESET);
+		
+		food = food.replaceAll(" ", "_");
 		if(hasInvalidInput(food)) {
 			System.out.println(ConsoleColors.RED_BOLD + "Writer.getRecipes() has InvalidInput" + ConsoleColors.RESET);
 			return new String[] { "error - line " + Thread.currentThread().getStackTrace()[1].getLineNumber() + " in " + XMLWriter.class.getSimpleName() };
 		}
-		
-		food = food.replaceAll(" ", "_");
 		
 		List<String> strings = new ArrayList<String>();
 		NodeList nodeList = getNodeList("root", rootFoodName, food, recipeName, "node()");
 		
 		for(int i = 0; i < nodeList.getLength(); i++) {
 			String nodeName = nodeList.item(i).getNodeName();
-			strings.add(addUnits(nodeName.replaceAll("_", " "), units.valueOf(getNodeList("root", rootIngredientsName, nodeName, untiName).item(0).getTextContent())));
+			strings.add(addUnits(nodeName.replaceAll("_", " "), units.valueOf(getNodeList("root", rootIngredientsName, nodeName, unitName).item(0).getTextContent())));
 		}
 		
 		if(strings.size() != 0) {
 			System.out.println(ConsoleColors.GREEN + "Finished Writer.getRecipes()" + ConsoleColors.RESET);
-			for(String string : strings) {
-				System.out.println(string);
-			}
 			return strings.toArray(new String[strings.size()]);
 		} else {
 			System.out.println(ConsoleColors.CYAN + "Finished Writer.getRecipes() with no recipe" + ConsoleColors.RESET);

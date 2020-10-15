@@ -221,7 +221,7 @@ public class OptionPanels {
 		
 		JLabel ingredientLabel = new JLabel(Main.INGREDIENTNAME + ": ");
 		JLabel countLabel = new JLabel("Menge: ");
-		JTextArea foodLabel = new JTextArea("Zu welchen Essen soll das \n" + Main.RECIPENAME + " hinzugefügt werden?");
+		JTextArea foodLabel = new JTextArea("Zu welcher " + Main.FOODNAME + " soll das \n" + Main.RECIPENAME + " hinzugefügt werden?");
 		foodLabel.setEditable(false);
 		foodLabel.setBackground(Main.GUI.getBackground());
 		foodLabel.setFont(ingredientLabel.getFont());

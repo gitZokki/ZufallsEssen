@@ -457,8 +457,11 @@ public class ActionListeners implements ActionListener {
 				int rand = ThreadLocalRandom.current().nextInt(0, foods.length);
 				if(!foodInt.contains(rand) || foods.length < foodWrapper.length) {
 					foodInt.add(rand);
-					Main.GUI.food.setText(Main.GUI.food.getText() + (i + 1) + " " + foods[rand] + "\n");
+					String text = Main.GUI.food.getText() + (i + 1) + " " + foods[rand];
+					if(i + 1  < foodWrapper.length) { text += "\n"; }
+					Main.GUI.food.setText(text);
 					for(String s : XMLWriter.getRecipes(foods[rand])) {
+						s = XMLWriter.hasUnit(s) ? XMLWriter.removeUnits(s) : s;
 						if(XMLWriter.getIngredientAmount(foods[rand], s) != -1) {
 							if(!recipe.containsKey(s))
 								recipe.put(s, 0);
@@ -481,7 +484,7 @@ public class ActionListeners implements ActionListener {
 				grid.fill = GridBagConstraints.HORIZONTAL;
 				
 				JLabel labels = new JLabel();
-				labels = new JLabel(i + "x " + s);
+				labels = new JLabel(i + units.valueOf(XMLWriter.getUnitOf(s)).getUnit() + " " + s);
 				grid.gridy = panelWrapper.row;
 				panelWrapper.panel.add(labels, grid);
 				

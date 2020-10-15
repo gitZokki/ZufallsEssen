@@ -29,7 +29,7 @@ public class Gui extends JFrame {
 	
 	public JButton generate = new JButton("Zufällige " + Main.FOODSNAME + " ausgeben");
 	public JTextField count = new JTextField("7");
-	public JTextArea food = new JTextArea("");
+	public JTextArea food = new JTextArea();
 	
 	private JMenuBar bar = new JMenuBar();
 	public JMenu foodMenu = new JMenu(Main.FOODSNAME);
@@ -115,16 +115,15 @@ public class Gui extends JFrame {
 		add(generate);
 		
 		food.setEditable(false);
-		
 		scroll = new JScrollPane(food);
 		
 		add(scroll);
 	}
 	
 	public void setSize() {
-		count.setBounds(BORDER, 20, getContentPane().getWidth() / 3, 25);
+		count.setBounds(BORDER, BORDER, getContentPane().getWidth() / 5, 25);
 		
-		generate.setLocation(count.getX() + count.getWidth() + BORDER, 20);
+		generate.setLocation(count.getX() + count.getWidth() + BORDER, count.getY());
 		generate.setSize(getContentPane().getWidth() - generate.getX() - BORDER, 25);
 		
 		scroll.setBounds(BORDER, count.getY() + count.getHeight() + BORDER, getContentPane().getWidth() - BORDER * 2,
@@ -132,6 +131,15 @@ public class Gui extends JFrame {
 	}
 	
 	public void setFont() {
-		food.setFont(new Font("Tahoma", Font.PLAIN, scroll.getHeight() / food.getLineCount()));
+		food.setFont(new Font("Tahoma", Font.PLAIN, getFontSize(scroll.getHeight() / (food.getLineCount() + 2))));
+	}
+	
+	private int getFontSize(int size) {
+		if(size >= 85) {
+			return 85;
+		} else if(size <= 15){
+			return 15;
+		}
+		return size;
 	}
 }
