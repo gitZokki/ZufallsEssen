@@ -249,11 +249,11 @@ public class ActionListeners implements ActionListener {
 		
 		switch (input) {
 			case 0: // 'Weitere' button
-				XMLWriter.addIngredients(ingredientsText.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
+				XMLWriter.addIngredients(ingredientsText.getText(), units.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
 				addIngredients();
 				break;
 			case 1: // 'OK' button (and 'Weiter')
-				XMLWriter.addIngredients(ingredientsText.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
+				XMLWriter.addIngredients(ingredientsText.getText(), units.getFromUnit((String) unitBox.getSelectedItem()), (String) categories.getSelectedItem());
 				break;
 		}
 		
@@ -289,12 +289,12 @@ public class ActionListeners implements ActionListener {
 		
 		switch (input) {
 			case 0: // 'Weitere' button
-				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()),
+				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.getFromUnit((String) unitBox.getSelectedItem()),
 						(String) categories.getSelectedItem());
 				editIngredients((String) ingredients.getSelectedItem());
 				break;
 			case 1: // 'OK' button (and 'Weiter')
-				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.g.getFromUnit((String) unitBox.getSelectedItem()),
+				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.getFromUnit((String) unitBox.getSelectedItem()),
 						(String) categories.getSelectedItem());
 				break;
 		}

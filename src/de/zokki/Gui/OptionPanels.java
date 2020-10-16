@@ -137,7 +137,7 @@ public class OptionPanels {
 		ingredientTf.addKeyListener(new KeyListeners(possibleKeys.ALPHABET));
 		
 		JComboBox<String> categories = new JComboBox<String>(XMLWriter.getCategories());
-		JComboBox<String> unit = new JComboBox<String>(units.g.getUnitArray());
+		JComboBox<String> unit = new JComboBox<String>(units.getUnitArray());
 		
 		categories.setPrototypeDisplayValue("EIN categories STRING");
 		unit.setPrototypeDisplayValue("EIN units      STRING");
@@ -173,7 +173,7 @@ public class OptionPanels {
 		
 		JComboBox<String> categories = new JComboBox<String>(XMLWriter.getCategories());
 		JComboBox<String> ingredients = new JComboBox<String>(XMLWriter.getIngredients());
-		JComboBox<String> unit = new JComboBox<String>(units.g.getUnitArray());
+		JComboBox<String> unit = new JComboBox<String>(units.getUnitArray());
 		
 		categories.setPrototypeDisplayValue("EIN categories STRING");
 		ingredients.setPrototypeDisplayValue("EIN LANGER ingredients STRING");

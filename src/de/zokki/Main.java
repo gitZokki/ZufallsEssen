@@ -34,7 +34,6 @@ public class Main {
 	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-		
 		try {
 			new ServerSocket(PORT);
 		} catch (Exception e) {
@@ -42,8 +41,9 @@ public class Main {
 			if(System.getProperty("os.name").equals("Linux")) {
 				try {
 					Runtime.getRuntime().exec("wmctrl -a " + GUINAME);
-				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(null, "'wmctrl' ist nicht installiert", "Error", JOptionPane.ERROR_MESSAGE);
+				} catch (IOException io) {
+					JOptionPane.showMessageDialog(null, "'wmctrl' ist nicht installiert!\nProgramm konnte nicht in den Vordergrund gesetzt werden.", "Error", JOptionPane.ERROR_MESSAGE);
+					io.printStackTrace();
 				}
 			}
 			System.exit(-1);
@@ -58,9 +58,14 @@ public class Main {
 	/**
 	 * FIXMEs and TODOs
 	 * 
-	 * FIXME deactivate and activate with XMLWriter
+	 * *XMLWriter*
 	 * TODO existend ingredients dont show in addRecipe
+	 * TODO set in editIngredients the category and unit
+	 * 
+	 * *GUI*
 	 * TODO maybe buttons - recipe and other infos
+	 * 
+	 * *New feature*
 	 * TODO Write everything on .txt and open it 
 	 * TODO set Application on front if already open - win? nircmd?
 	 * TODO settings -> xml-file location, txt-file location - maybe save or temp

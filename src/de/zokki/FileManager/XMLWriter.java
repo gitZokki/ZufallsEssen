@@ -65,17 +65,7 @@ public class XMLWriter {
 			return unit;
 		}
 		
-		public String[] getUnitArray() {
-			String[] strings = new String[units.values().length];
-			
-			for(int i = 0; i < units.values().length; i++) {
-				strings[i] = units.values()[i].getUnit();
-			}
-			
-			return strings;
-		}
-		
-		public units getFromUnit(String unit) {
+		public static units getFromUnit(String unit) {
 			switch (unit) {
 				case "Gramm":
 					return g;
@@ -93,6 +83,15 @@ public class XMLWriter {
 			}
 		}
 		
+		public static String[] getUnitArray() {
+			String[] strings = new String[units.values().length];
+			
+			for(int i = 0; i < units.values().length; i++) {
+				strings[i] = units.values()[i].getUnit();
+			}
+			
+			return strings;
+		}
 	}
 	
 	public XMLWriter() {
@@ -111,8 +110,9 @@ public class XMLWriter {
 				System.out.println(ConsoleColors.GREEN + "Done reading XML File" + ConsoleColors.RESET);
 			} catch (Exception e) {
 				String message = file.exists() ? "Datei ersetzen?" : "Neue Datei erstellen?";
+				String title = file.exists() ? "Error" : "Info";
 				
-				if(JOptionPane.showConfirmDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE) != 0) {
+				if(JOptionPane.showConfirmDialog(null, message, title, JOptionPane.ERROR_MESSAGE) != 0) {
 					JOptionPane.showMessageDialog(null, "Programm wird geschlossen", "Info", 0);
 					System.exit(-1);
 				}
@@ -267,7 +267,7 @@ public class XMLWriter {
 		var wrapper = new Object() {
 			boolean value = false;
 		};
-		Arrays.asList(units.g.getUnitArray()).forEach(u -> {
+		Arrays.asList(units.getUnitArray()).forEach(u -> {
 			if(hasUnit.contains(u)) {
 				wrapper.value = true;
 			}
