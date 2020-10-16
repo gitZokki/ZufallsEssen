@@ -137,7 +137,7 @@ public class Gui extends JFrame {
 	private int getFontSize(int size) {
 		if(size >= 85) {
 			return 85;
-		} else if(size <= 15){
+		} else if(size <= 15) {
 			return 15;
 		}
 		return size;
