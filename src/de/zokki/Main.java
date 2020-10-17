@@ -37,10 +37,13 @@ public class Main {
 	static int PORT = 1044;
 
 	enum osName {
-		Linux, Windows, Mac
+		Linux, Windows, other
 	}
 
 	public static void main(String[] args) {
+		System.getProperties().forEach((o, p) -> {
+			System.out.println(o + ": " + p);
+		});
 		setOsName();
 		if(checkAlreadyRunning()) {
 			System.err.println("Application already running! - set Application on front");
@@ -63,7 +66,7 @@ public class Main {
 		} else if(name.contains("Linux")) {
 			os = osName.Linux;
 		} else {
-			os = osName.Mac;
+			os = osName.other;
 		}
 	}
 
@@ -80,8 +83,7 @@ public class Main {
 
 	private static boolean checkOnWindows() {
 		try {
-			ProcessBuilder builder = new ProcessBuilder();
-			Process process = builder.command("powershell", "Get-Process | Where-Object { $_.MainWindowTitle -like '" + GUINAME + "' }").start();
+			Process process = new ProcessBuilder().command("powershell", "Get-Process | Where-Object { $_.MainWindowTitle -like '" + GUINAME + "' }").start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			while(reader.readLine() != null) {
 				return true;
@@ -92,24 +94,15 @@ public class Main {
 		return false;
 	}
 
-	@SuppressWarnings("resource")
 	private static boolean checkOnLinux() {
-		// FIXME add Linux check
 		try {
-			new ServerSocket(PORT);
-		} catch(Exception e) {
-			System.err.println("Application already running! - set Application on front");
-			if(System.getProperty("os.name").equals("Linux")) {
-				try {
-					Runtime.getRuntime().exec("wmctrl -a " + GUINAME);
-				} catch(IOException io) {
-					JOptionPane.showMessageDialog(null,
-							"'wmctrl' ist nicht installiert!\nProgramm konnte nicht in den Vordergrund gesetzt werden.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					io.printStackTrace();
-				}
+			Process process = new ProcessBuilder().command("dash", "ps aux | grep -i \"" + GUINAME + "\"").start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			while(reader.readLine() != null) {
+				return true;
 			}
-			System.exit(-1);
+		} catch(Exception e) {
+			return true;
 		}
 		return false;
 	}
@@ -133,17 +126,28 @@ public class Main {
 				setOnFocusLinux();
 				break;
 			default:
-				setOnFocusOther();
 				break;
 		}
 	}
 	
 	private static void setOnFocusWindows() {
+		//FIXME tempfile? or so idn
 		try {
-			ProcessBuilder builder = new ProcessBuilder();
+			/*
+			 * Maybe as script in tempfile and execute this and del it after this
+			 */
+			/*
+			File file = new File(System.getProperty("temp") + System.getProperty("file.separator") + "temp.bat");
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+			writer.write("every comment in new line or so idn");
+			writer.flush();
+			writer.close();
+			Runtime.getRuntime().exec("powershell start " + file);
+			*/
+			/*ProcessBuilder builder = new ProcessBuilder();
 			String[] command = new String[]{
 					"cd c:\\",
-					"$notepad = Start-Process notepad -WindowStyle Minimized -PassThru", "Start-Sleep -Seconds 2",
+					"$notepad = Start-Process notepad -WindowStyle Minimized -PassThru", "Start-Sleep -Seconds 2", //Find-Process 
 					"$sig = '[DllImport(\"user32.dll\")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow); [DllImport(\"user32.dll\")] public static extern int SetForegroundWindow(IntPtr hwnd);' ","Start-Sleep -Seconds 2",
 					"$type = Add-Type -MemberDefinition $sig -Name WindowAPI -PassThru","Start-Sleep -Seconds 2",
 					"$hwnd = $notepad.MainWindowHandle ","Start-Sleep -Seconds 2",
@@ -162,16 +166,21 @@ public class Main {
 			String line = "";
 			while((line = reader.readLine()) != null) {
 				System.out.println(line);
-			}
+			}*/
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static void setOnFocusLinux() {
-	}
-	
-	private static void setOnFocusOther() {
+		try {
+			Runtime.getRuntime().exec("wmctrl -a " + GUINAME);
+		} catch(IOException io) {
+			JOptionPane.showMessageDialog(null,
+					"'wmctrl' ist nicht installiert!\nProgramm konnte nicht in den Vordergrund gesetzt werden.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			io.printStackTrace();
+		}
 	}
 	
 	/**
