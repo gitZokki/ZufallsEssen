@@ -1,8 +1,12 @@
 package de.zokki;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 
 import javax.swing.JOptionPane;
@@ -41,9 +45,6 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		System.getProperties().forEach((o, p) -> {
-			System.out.println(o + ": " + p);
-		});
 		setOsName();
 		if(checkAlreadyRunning()) {
 			System.err.println("Application already running! - set Application on front");
@@ -131,42 +132,23 @@ public class Main {
 	}
 	
 	private static void setOnFocusWindows() {
-		//FIXME tempfile? or so idn
+		//FIXME test me
 		try {
-			/*
-			 * Maybe as script in tempfile and execute this and del it after this
-			 */
-			/*
-			File file = new File(System.getProperty("temp") + System.getProperty("file.separator") + "temp.bat");
+			File file = new File(System.getProperty("java.io.tmpdir") + "\\temp.bat");
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-			writer.write("every comment in new line or so idn");
+			String[] command = new String[]{
+					"$process = Get-Process | Where-Object { $_.MainWindowTitle -like '" + GUINAME + "' } -PassThru", 
+					"$sig = '[DllImport(\"user32.dll\")] public static extern int SetForegroundWindow(IntPtr hwnd);' ",
+					"$type = Add-Type -MemberDefinition $sig -Name WindowAPI -PassThru",
+					"$hwnd = $process.MainWindowHandle ",
+					"$type::SetForegroundWindow($hwnd)"};
+			for(String s : command) {
+				writer.write(s);
+				writer.newLine();
+			}
 			writer.flush();
 			writer.close();
 			Runtime.getRuntime().exec("powershell start " + file);
-			*/
-			/*ProcessBuilder builder = new ProcessBuilder();
-			String[] command = new String[]{
-					"cd c:\\",
-					"$notepad = Start-Process notepad -WindowStyle Minimized -PassThru", "Start-Sleep -Seconds 2", //Find-Process 
-					"$sig = '[DllImport(\"user32.dll\")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow); [DllImport(\"user32.dll\")] public static extern int SetForegroundWindow(IntPtr hwnd);' ","Start-Sleep -Seconds 2",
-					"$type = Add-Type -MemberDefinition $sig -Name WindowAPI -PassThru","Start-Sleep -Seconds 2",
-					"$hwnd = $notepad.MainWindowHandle ","Start-Sleep -Seconds 2",
-					"$hwnd",
-					"$type::ShowWindowAsync($hwnd, 3)", "Start-Sleep -Seconds 2",
-					"$type::SetForegroundWindow($hwnd)"};
-			Process process;
-			String s = "";
-			for(String string : command) {
-				s += string + " ; ";
-			}
-			System.out.println(s);
-			process = Runtime.getRuntime().exec("powershell start powershell {" + s + "}");
-			//process = builder.command("powershell" , "start powershell {(New-Object -ComObject WScript.Shell).AppActivate((get-process javaw).MainWindowTitle)}").start();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-			String line = "";
-			while((line = reader.readLine()) != null) {
-				System.out.println(line);
-			}*/
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
