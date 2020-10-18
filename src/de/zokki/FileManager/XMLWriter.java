@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -249,8 +250,8 @@ public class XMLWriter {
 		return getNodeList(path.substring(0, path.length() - 1));
 	}
 	
-	public static String getUnitOf(String unit) {
-		return getNodeList("root", rootIngredientsName, unit.replaceAll(" ", "_"), unitName).item(0).getTextContent();
+	public static units getUnitOf(String unit) {
+		return units.valueOf(getNodeList("root", rootIngredientsName, unit.replaceAll(" ", "_"), unitName).item(0).getTextContent());
 	}
 	
 	public static String removeUnits(String input) {
@@ -472,6 +473,15 @@ public class XMLWriter {
 		return strings;
 	}
 	
+	public static String getCategoriesOf(String ingredient) {
+		System.out.println(ConsoleColors.GREEN + "In XMLWriter.getCategoriesOf()" + ConsoleColors.RESET);
+		
+		NodeList nodes = getNodeList("root", rootIngredientsName, ingredient.replaceAll(" ", "_"), rootCategoryName);
+		
+		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.getCategoriesOf()" + ConsoleColors.RESET);
+		return nodes.item(0).getTextContent().replaceAll("_", " ");
+	}
+	
 	public static void addIngredients(String ingredient, units unit, String category) {
 		System.out.println(ConsoleColors.GREEN + "In Writer.addIngredients()" + ConsoleColors.RESET);
 		
@@ -577,17 +587,55 @@ public class XMLWriter {
 	}
 	
 	public static String[] getIngredients() {
+		return getIngredients(true);
+	}
+	
+	public static String[] getIngredients(boolean addUnits) {
 		System.out.println(ConsoleColors.GREEN + "In XMLWriter.getIngredients()" + ConsoleColors.RESET);
 		
 		NodeList nodeList = rootIngredients.getChildNodes();
 		String[] strings = new String[nodeList.getLength()];
 		for(int i = 0; i < nodeList.getLength(); i++) {
-			strings[i] = addUnits(nodeList.item(i).getNodeName().replaceAll("_", " "),
-					units.valueOf(((Element) nodeList.item(i)).getElementsByTagName(unitName).item(0).getTextContent()));
+			String name = nodeList.item(i).getNodeName().replaceAll("_", " ");
+			if(addUnits) {
+				strings[i] = addUnits(name, getUnitOf(name));
+			} else {
+				strings[i] = name;
+			}
 		}
 		
 		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.getIngredients()" + ConsoleColors.RESET);
 		return strings;
+	}
+
+	public static String[] getPossibleIngredientsOf(String food) {
+		System.out.println(ConsoleColors.GREEN + "In XMLWriter.getPossibleIngredientsOf()" + ConsoleColors.RESET);
+		
+		food = food.replaceAll(" ", "_");
+		
+		NodeList nodes = getNodeList("root", rootFoodName, food, recipeName, "node()");
+		
+		String[] ingredients = getIngredients(false);
+		Stack<String> possivles = new Stack<String>();
+		
+		for(String string : ingredients) {
+			boolean isIn = false;
+			for(int i = 0; i < nodes.getLength(); i++) {
+				if(nodes.item(i).getNodeName().replaceAll("_", " ").contentEquals(string)) {
+					isIn = true;
+					break;
+				}
+			}
+			if(!isIn) {
+				possivles.add(addUnits(string, getUnitOf(string)));
+			}
+		}
+		if(possivles.size() == 0) {
+			possivles.add(noIngredient.replaceAll("_", " "));
+		}
+		
+		System.out.println(ConsoleColors.GREEN + "Finished XMLWriter.getPossibleIngredientsOf()" + ConsoleColors.RESET);
+		return possivles.toArray(new String[possivles.size()]);
 	}
 	
 	public static int getIngredientAmount(String food, String ingredient) {

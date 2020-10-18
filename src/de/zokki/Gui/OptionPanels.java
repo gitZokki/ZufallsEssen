@@ -161,7 +161,7 @@ public class OptionPanels {
 		return new Component[] {panel, unit, categories, ingredientTf};
 	}
 	
-	public Component[] getIngredientsEditComponents(String defaultValue) {
+	public Component[] getIngredientsEditComponents() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 
@@ -171,13 +171,32 @@ public class OptionPanels {
 		JTextField newName = new JTextField();	
 		newName.setPreferredSize(new Dimension(100, 25));
 		
-		JComboBox<String> categories = new JComboBox<String>(XMLWriter.getCategories());
 		JComboBox<String> ingredients = new JComboBox<String>(XMLWriter.getIngredients());
+		JComboBox<String> categories = new JComboBox<String>(XMLWriter.getCategories());
 		JComboBox<String> unit = new JComboBox<String>(units.getUnitArray());
 		
-		categories.setPrototypeDisplayValue("EIN categories STRING");
 		ingredients.setPrototypeDisplayValue("EIN LANGER ingredients STRING");
+		categories.setPrototypeDisplayValue("EIN categories STRING");
 		unit.setPrototypeDisplayValue("units");
+		
+		String selected = XMLWriter.removeUnits((String) ingredients.getSelectedItem());
+		categories.setSelectedItem(XMLWriter.getCategoriesOf(selected));
+		unit.setSelectedItem(XMLWriter.getUnitOf(selected).getUnit());
+		
+		ingredients.addItemListener(new ItemListener() {
+			short i = 0;
+			
+			@Override
+			public void itemStateChanged(ItemEvent event) {
+				if(i % 2 == 1) {
+					if(i > 10) i = 0;
+					String selected = XMLWriter.removeUnits((String) event.getItem());
+					categories.setSelectedItem(XMLWriter.getCategoriesOf(selected));
+					unit.setSelectedItem(XMLWriter.getUnitOf(selected).getUnit());
+				}
+				i++;
+			}
+		});
 		
 		grid.insets = new Insets(2, 2, 2, 2);
 		grid.gridwidth = GridBagConstraints.REMAINDER;
@@ -212,6 +231,23 @@ public class OptionPanels {
 		
 		foods.setPrototypeDisplayValue("EIN MITTLERER foods");
 		foods.setSelectedItem(defaultValue);
+		
+		String[] possibleIngredients = XMLWriter.getPossibleIngredientsOf((String) foods.getSelectedItem());
+		ingredients.setModel(new DefaultComboBoxModel<String>(possibleIngredients));
+		
+		foods.addItemListener(new ItemListener() {
+			short i = 0;
+			
+			@Override
+			public void itemStateChanged(ItemEvent event) {
+				if(i % 2 == 1) {
+					if(i > 10) i = 0;
+					String[] possibleIngredients = XMLWriter.getPossibleIngredientsOf((String) event.getItem());
+					ingredients.setModel(new DefaultComboBoxModel<String>(possibleIngredients));
+				}
+				i++;
+			}
+		});
 		
 		JTextField count = new JTextField("1");
 		count.setHorizontalAlignment(JTextField.RIGHT);
