@@ -79,7 +79,7 @@ public class ActionListeners implements ActionListener {
 			
 		} else if(Main.GUI.ingredientsEdit == event.getSource()) {
 			System.out.println(ConsoleColors.GREEN + "ingredientsEdit clicked" + ConsoleColors.RESET);
-			editIngredients("");
+			editIngredients();
 			
 		} else if(Main.GUI.ingredientsDel == event.getSource()) {
 			System.out.println(ConsoleColors.GREEN + "ingredientsDel clicked" + ConsoleColors.RESET);
@@ -260,7 +260,7 @@ public class ActionListeners implements ActionListener {
 		System.out.println(ConsoleColors.GREEN + "Finished ActionListeners.addIngredients()" + ConsoleColors.RESET);
 	}
 	
-	private void editIngredients(String defaultValue) {
+	private void editIngredients() {
 		System.out.println(ConsoleColors.GREEN + "In ActionListeners.editIngredients()" + ConsoleColors.RESET);
 		if(!hasIngredients()) { return; }
 		
@@ -270,7 +270,7 @@ public class ActionListeners implements ActionListener {
 		JComboBox<String> ingredients = null;
 		JComboBox<String> unitBox = null;
 		
-		for(Component comp : op.getIngredientsEditComponents(defaultValue)) {
+		for(Component comp : op.getIngredientsEditComponents()) {
 			if(comp instanceof JPanel) {
 				panel = (JPanel) comp;
 			} else if(comp instanceof JTextField) {
@@ -291,7 +291,7 @@ public class ActionListeners implements ActionListener {
 			case 0: // 'Weitere' button
 				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.getFromUnit((String) unitBox.getSelectedItem()),
 						(String) categories.getSelectedItem());
-				editIngredients((String) ingredients.getSelectedItem());
+				editIngredients();
 				break;
 			case 1: // 'OK' button (and 'Weiter')
 				XMLWriter.editIngredients((String) ingredients.getSelectedItem(), newName.getText(), units.getFromUnit((String) unitBox.getSelectedItem()),
@@ -343,13 +343,19 @@ public class ActionListeners implements ActionListener {
 		
 		String food = (String) foods.getSelectedItem();
 		
+		String selected = (String) ingredients.getSelectedItem();
+		
 		switch (input) {
 			case 0: // 'Weitere' button
-				XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
+				if(!selected.contentEquals(XMLWriter.noIngredient.replace("_", " "))) {
+					XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
+				}
 				addRecipe(food);
 				break;
 			case 1: // 'OK' button (and 'Weiter')
-				XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
+				if(!selected.contentEquals(XMLWriter.noIngredient.replace("_", " "))) {
+					XMLWriter.addRecipe(food, (String) ingredients.getSelectedItem(), Integer.parseInt(count.getText().trim()));
+				}
 				break;
 		}
 		
@@ -484,7 +490,7 @@ public class ActionListeners implements ActionListener {
 				grid.fill = GridBagConstraints.HORIZONTAL;
 				
 				JLabel labels = new JLabel();
-				labels = new JLabel(i + units.valueOf(XMLWriter.getUnitOf(s)).getUnit() + " " + s);
+				labels = new JLabel(i + XMLWriter.getUnitOf(s).getUnit() + " " + s);
 				grid.gridy = panelWrapper.row;
 				panelWrapper.panel.add(labels, grid);
 				

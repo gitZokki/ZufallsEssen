@@ -58,10 +58,6 @@ public class Main {
 	/**
 	 * FIXMEs and TODOs
 	 * 
-	 * *XMLWriter*
-	 * TODO existend ingredients dont show in addRecipe
-	 * TODO set in editIngredients the category and unit
-	 * 
 	 * *GUI*
 	 * TODO maybe buttons - recipe and other infos
 	 * 
